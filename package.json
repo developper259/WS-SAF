@@ -1,0 +1,19 @@
+{
+  "name": "server-websocket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {},
+  "author": "trolleur259",
+  "license": "ISC",
+  "dependencies": {
+    "ts-node": "^10.9.1",
+    "tsc": "^2.0.4",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "@types/node": "^16.18.59",
+    "@types/ws": "^8.5.8",
+    "typescript": "^4.9.5"
+  }
+}
