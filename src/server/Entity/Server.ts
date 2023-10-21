@@ -4,11 +4,13 @@ import { Client } from './Client';
 export class Server {
   port: number;
   server: WebSocket.Server;
+  minVersion: string;
   clients: Client[];
 
   constructor() {
     this.port = 4433;
     this.server = new WebSocket.Server({ port: this.port });
+    this.minVersion = "1.0.0";
     this.clients = [];
 
     this.server.on('connection', (socket: WebSocket) => {
@@ -33,7 +35,7 @@ export class Server {
 
       if (client.isEmpty() && client != undefined) socket.close();
       else clearTimeout(timeout);
-    }, 10000);
+    }, 3000);
   }
 
   onMessage(data: string, socket: WebSocket) {
@@ -43,12 +45,13 @@ export class Server {
 
     if (client.isEmpty()) {
       try {
-        const objetJSON = JSON.parse(data);
-        console.log(objetJSON);
+        this.firsConnect(data, socket);
       } catch (erreur) {
         console.error("Erreur lors de l'analyse du JSON :" + data);
         socket.close();
       }
+    } else {
+
     }
   }
 
@@ -66,5 +69,40 @@ export class Server {
 
   getClient(socket: WebSocket): Client | undefined {
     return this.clients.find((client) => client.socket === socket);
+  }
+
+  firsConnect(data:string, socket: WebSocket) {
+    const client = this.getClient(socket);
+    const dataJson = JSON.parse(data);
+
+    const type = dataJson["type"];
+    const id = dataJson["id"];
+    const username = dataJson["username"];
+    const teamID = dataJson["teamID"];
+    const version = dataJson["version"];
+
+    if (!type || !id || !username || !teamID || !version) {
+      socket.close();
+      return;
+    }
+
+    if (type != "client"){
+      socket.close();
+      return;
+    }
+    if (version != this.minVersion) {
+      const data = {
+        succes: false,
+        message: "Version not supported"
+      };
+      socket.send(JSON.stringify(data));
+      socket.close();
+      return;
+    }
+
+    client.define(username, id, teamID, version);
+    console.log(this.clients);
+
+    console.log(dataJson);
   }
 }

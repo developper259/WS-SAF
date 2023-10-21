@@ -19,28 +19,19 @@ export class Client {
     this.id = this.genID();
     this.teamID = teamID;
 
-    const timeout = setTimeout(() => {
-      try {
-        this.socket = new WebSocket('ws://' + this.adress + ':' + this.port);
-        clearTimeout(timeout);
+    this.socket = new WebSocket('ws://' + this.adress + ':' + this.port);
 
-        this.socket.on('open', () => {
-          this.onOpen();
-        });
+    this.socket.on('open', () => {
+      this.onOpen();
+    });
 
-        this.socket.on('message', (message: string) => {
-          this.onMessage(message);
-        });
+    this.socket.on('message', (message: string) => {
+      this.onMessage(message);
+    });
 
-        this.socket.on('close', () => {
-          this.onClose();
-        });
-
-      } catch(error) {
-        console.log("An error has occurred while connecting to the server");
-      }
-    }, 5000);
-
+    this.socket.on('close', () => {
+      this.onClose();
+    });
   }
 
   onOpen() {
@@ -58,7 +49,8 @@ export class Client {
   }
 
   onMessage(message: string) {
-    console.log(`${message}`);
+    const data = JSON.parse(`${message}`);
+    if (data["succes"] == false) console.log(data["message"]);
   }
 
   onClose() {
