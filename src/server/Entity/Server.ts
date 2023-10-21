@@ -28,12 +28,17 @@ export class Server {
     const client = new Client(socket);
     this.clients.push(client);
     console.log(this.clients);
+    const timeout = setTimeout(() => {
+      const client = this.getClient(socket);
+
+      if (client.isEmpty() && client != undefined) socket.close();
+      else clearTimeout(timeout);
+    }, 10000);
   }
 
   onMessage(data: string, socket: WebSocket) {
     let client = this.getClient(socket);
     data = `${data}`;
-
     if (!client) return;
 
     if (client.isEmpty()) {

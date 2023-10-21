@@ -1,21 +1,8 @@
-import WebSocket from 'ws';
-
-const adress = "localhost";
-const port = "4433";
+import { Client } from "./Entity/Client"
 
 
-const client = new WebSocket('ws://' + adress + ':' + port);
-
-client.on('open', () => {
-  console.log('Connexion WebSocket établie.');
-
-  client.send('Bonjour, serveur WebSocket !');
-});
-
-client.on('message', (message: string) => {
-  console.log(`Message du serveur : ${message}`);
-});
-
-client.on('close', () => {
-  console.log('Connexion WebSocket fermée.');
-});
+const client = new Client(
+  "localhost",
+  "4433",
+  "trolleur259",
+  "GYfz368uu908HLhz");
