@@ -12,4 +12,11 @@ export class Client {
 		this.id = null;
 		this.username = null;
 	}
+
+	isEmpty() {
+		if (this.id == null || this.username == null) {
+			return true;
+		} 
+		return false;
+	}
 }

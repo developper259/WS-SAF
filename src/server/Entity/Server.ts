@@ -15,7 +15,7 @@ export class Server {
       this.onConnection(socket);
 
       socket.on('message', (message: string) => {
-        this.onMessage(message);
+        this.onMessage(message, socket);
       });
 
       socket.on('close', () => {
@@ -30,8 +30,21 @@ export class Server {
     console.log(this.clients);
   }
 
-  onMessage(message: string) {
-    console.log(`${message}`);
+  onMessage(data: string, socket: WebSocket) {
+    let client = this.getClient(socket);
+    data = `${data}`;
+
+    if (!client) return;
+
+    if (client.isEmpty()) {
+      try {
+        const objetJSON = JSON.parse(data);
+        console.log(objetJSON);
+      } catch (erreur) {
+        console.error("Erreur lors de l'analyse du JSON :" + data);
+        socket.close();
+      }
+    }
   }
 
   onClose(socket: WebSocket) {
